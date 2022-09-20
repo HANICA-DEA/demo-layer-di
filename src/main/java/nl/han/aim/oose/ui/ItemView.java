@@ -12,11 +12,18 @@ public class ItemView extends JFrame {
     public static final String BUTTON_TITLE = "Add Random Item";
     public static final String COLUMN_NAME = "Item Name";
 
-    private JPanel panel1 = new JPanel();
-    private JTable itemTable = new JTable(new DefaultTableModel(new Object[]{COLUMN_NAME}, 0));
-    private JButton addButton = new JButton();
+    private final JPanel panel1 = new JPanel();
+    // The table and its model (the data) are so tightly coupled that DI is not relevant here
+    private final JTable itemTable = new JTable(new DefaultTableModel(new Object[]{COLUMN_NAME}, 0));
+    private final JButton addButton = new JButton();
 
-    private ItemCollector itemCollector = new ItemCollector();
+    private final ItemCollector itemCollector;
+    private final RandomItemCreator randomItemCreator;
+
+    public ItemView(ItemCollector itemCollector, RandomItemCreator randomItemCreator) {
+        this.itemCollector = itemCollector;
+        this.randomItemCreator = randomItemCreator;
+    }
 
     public void showView()
     {
@@ -42,7 +49,7 @@ public class ItemView extends JFrame {
 
     private void initializeButtonBehaviour() {
         addButton.setText(BUTTON_TITLE);
-        addButton.addActionListener(new AddButtonHandler(this));
+        addButton.addActionListener(new AddButtonHandler(this, itemCollector, randomItemCreator));
     }
 
     public void bindDataToTable() {
